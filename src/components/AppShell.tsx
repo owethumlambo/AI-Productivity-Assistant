@@ -27,7 +27,7 @@ export const NAV = [
 ] as const;
 
 function useTheme() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark" | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("theme");
@@ -41,11 +41,15 @@ function useTheme() {
   }, []);
 
   useEffect(() => {
+    if (!theme) return;
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  return { theme, toggle: () => setTheme((t) => (t === "dark" ? "light" : "dark")) };
+  return {
+    theme: theme ?? "light",
+    toggle: () => setTheme((t) => (t === "dark" ? "light" : "dark")),
+  };
 }
 
 export function AppShell({
